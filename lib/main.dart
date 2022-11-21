@@ -64,8 +64,7 @@ class _CurrencyConvertorState extends State<CurrencyConvertor> {
               const SizedBox(height: 10),
               TextField(
                 //controller: inputValue,
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 decoration: InputDecoration(
                   hintText: 'Enter the amount of EURO.',
                   hintStyle: const TextStyle(fontSize: 20),
