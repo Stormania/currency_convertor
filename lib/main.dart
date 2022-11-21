@@ -5,7 +5,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -15,91 +15,93 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Raleway',
           primarySwatch: Colors.red,
           hintColor: Colors.grey),
-      home: const CurrencyConvertor(title: 'Currency Convertor'),
+      home: const CurrencyConvertor(),
     );
   }
 }
 
 class CurrencyConvertor extends StatefulWidget {
-  const CurrencyConvertor({super.key, required this.title});
-  final String title;
+  const CurrencyConvertor({Key? key}) : super(key: key);
   @override
   State<CurrencyConvertor> createState() => _CurrencyConvertorState();
 }
 
 class _CurrencyConvertorState extends State<CurrencyConvertor> {
-  TextEditingController inputValue = TextEditingController(); // global variable
-  String currency = 'RON';
-  void convert() {
-    setState(() {});
-  }
+  // Global Variables
+  //TextEditingController inputValue = TextEditingController(); // global variable
+  double inputValue = 0.0;
+  String? errorText;
+  String? currency = 'RON';
+  String? convertText = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text(
-            'Currency Convertor',
-            style: TextStyle(color: Colors.yellowAccent),
-          ),
+          title: const Text('Currency Convertor',
+              style: TextStyle(color: Colors.yellowAccent)),
         ),
         body: SafeArea(
           child: Container(
             padding:
                 const EdgeInsets.symmetric(horizontal: 15.0, vertical: 0.0),
             child: Column(
-              children: <Widget>[
+              children: [
                 Image.network(
                     'https://www.meme-arsenal.com/memes/8b5853d172e50f14ec7c53af8975c449.jpg'),
-                const Text("PUT YOUR MONEY HERE",
-                    style: TextStyle(
-                        fontSize: 25,
-                        color: Colors.red,
-                        fontWeight: FontWeight.w900)),
-                const SizedBox(
-                  height: 10,
+                const Text(
+                  "PUT YOUR MONEY HERE",
+                  style: TextStyle(
+                      fontSize: 30,
+                      color: Colors.red,
+                      fontWeight: FontWeight.w900),
                 ),
+                const SizedBox(height: 10),
                 TextField(
-                    controller: inputValue,
+                    //controller: inputValue,
                     keyboardType:
                         const TextInputType.numberWithOptions(decimal: true),
-                    decoration: const InputDecoration(
-                        //errorText: error,
-                        hintText: 'Enter the amount of EURO',
-                        labelStyle:
-                            TextStyle(fontSize: 30, color: Colors.grey)),
-                    onChanged: (String value) {
+                    decoration: InputDecoration(
+                      hintText: 'Enter the amount of EURO.',
+                      hintStyle: const TextStyle(fontSize: 20),
+                      errorText: errorText,
+                      errorStyle: const TextStyle(fontSize: 20),
+                      //labelText: 'Currency Convertor: EURO > RON',
+                      //labelStyle: const TextStyle(fontSize: 30),
+                    ),
+                    onChanged: (String input) {
                       setState(() {
-                        inputValue.text;
+                        final double? value = double.tryParse(input);
+                        if (value == null) {
+                          errorText = "Please enter a number.";
+                        } else {
+                          inputValue = (value * 4.5);
+                        }
                       });
                     }),
-                const SizedBox(
-                  height: 25,
-                ),
+                const SizedBox(height: 25),
                 ElevatedButton.icon(
-                  icon: const Icon(
-                    Icons.currency_exchange_sharp,
-                    size: 30,
-                  ),
-                  label: const Text(
-                    'Convert',
-                    style: TextStyle(fontSize: 30),
-                  ),
+                  icon: const Icon(Icons.currency_exchange_sharp, size: 30),
+                  label: const Text('Convert', style: TextStyle(fontSize: 30)),
                   style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0)),
                       minimumSize: const Size(300, 60)),
                   onPressed: () {
-                    Text('${inputValue.text} $currency');
+                    setState(() {
+                      convertText = '$inputValue $currency';
+                    });
                   },
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Text(
-                  '${inputValue.text} $currency',
-                  style: const TextStyle(color: Colors.grey, fontSize: 30),
+                const SizedBox(height: 15),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 15.0, vertical: 0.0),
+                  child: Text(
+                    convertText!,
+                    style: const TextStyle(color: Colors.grey, fontSize: 30),
+                  ),
                 ),
               ],
             ),
